@@ -1,0 +1,35 @@
+#manifest
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heart-model-nearr27-deployment
+spec:
+  selector:
+    matchLabels:
+      app: heart-model-nearr27-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: heart-model-nearr27-server
+    spec:
+      containers:
+      - name: heart-model-nearr27-container
+        #image: gcr.io/tensorflow-serving/resnet 
+        image: docker.io/rustcohle27/fastapiml:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: heart-model-nearr27-service
+  name: heart-model-nearr27-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: heart-model-nearr27-server
+  type: LoadBalancer
